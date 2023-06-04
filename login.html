@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from www.thomdock.com/login by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 04 Jun 2023 14:36:10 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
+    <title>Thomdock | Login</title>
+    <link rel="stylesheet" href="static/home/css/common.css"/>
+    <link rel="stylesheet" href="static/home/css/login.css"/>
+    <script type="text/javascript" src="static/home/js/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="static/home/layui/layui.js"></script>
+</head>
+<body>
+<div class="login">
+    <div class="login-top">
+        <p>Please Login</p>
+        <p>Let's create wealth together</p>
+    </div>
+    <div class="login-main">
+        <div class="login-main-input">
+            <input type="text" name="mobile" placeholder="please enter your mobile number"/>
+        </div>
+        <div class="login-main-input">
+            <input type="password" name="password" placeholder="please enter your password"/>
+        </div>
+        <a href="recover.html" class="forget">Forget the password?</a>
+        <div class="btn-box">
+            <button type="button" class="login-btn">Login</button>
+            <a href="register.html" class="reg-btn">Sign In</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var _token = "uNE79oUqysQO8wizHV8e8nYtc4BUenvT9CCqHVmE";
+    layui.use(['form', 'layer'], function () {
+        $ = layui.jquery;
+        var form = layui.form, layer = layui.layer;
+        $("body").on('click', '.login-btn', function () {
+            var _this = $(this);
+            _this.attr('disabled', true);
+            var loading = layer.load(2, {shade: [0.5, '#393D49']});
+            var mobile = $.trim($("input[name='mobile']").val());
+            var password = $("input[name='password']").val();
+            if (mobile.length == 0) {
+                layer.close(loading);
+                _this.attr('disabled', false);
+                layer.msg('please enter your mobile number...', {icon: 16, time: 1000, shade: [0.5, '#393D49']});
+                return false;
+            }
+            if (password.length == 0) {
+                layer.close(loading);
+                _this.attr('disabled', false);
+                layer.msg('please enter your password...', {icon: 16, time: 1000, shade: [0.5, '#393D49']});
+                return false;
+            }
+            var data = {mobile: mobile, password: password, _token: _token};
+            $.post("login.html", data, function (result) {
+                layer.close(loading);
+                _this.attr('disabled', false);
+                if (result.code == 200) {
+                    layer.msg('success...', {icon: 16, time: 500, shade: [0.5, '#393D49']}, function () {
+                        location.href = "index.html";
+                    });
+                } else {
+                    layer.msg(result.msg, {icon: 16, time: 1000, shade: [0.5, '#393D49']});
+                }
+                return false;
+            }, "json").fail(function () {
+                layer.close(loading);
+                _this.attr('disabled', false);
+                return false;
+            });
+        });
+    });
+</script>
+</body>
+
+<!-- Mirrored from www.thomdock.com/login by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 04 Jun 2023 14:36:12 GMT -->
+</html>

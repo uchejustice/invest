@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from www.thomdock.com/register by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 04 Jun 2023 14:36:13 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover"/>
+    <title>Thomdock | Register</title>
+    <link rel="stylesheet" href="static/home/css/common.css"/>
+    <link rel="stylesheet" href="static/home/css/login.css"/>
+    <script type="text/javascript" src="static/home/js/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="static/home/layui/layui.js"></script>
+</head>
+<body>
+<div class="login">
+    <div class="login-top">
+        <p>Register</p>
+        <p>Let's create wealth together</p>
+    </div>
+    <div class="login-main">
+        <div class="login-main-input">
+            <input type="text" name="mobile" placeholder="please enter your mobile number"/>
+        </div>
+        <div class="login-main-input">
+            <input type="password" name="password" placeholder="please enter your password"/>
+        </div>
+        <div class="login-main-input">
+            <input type="text" name="inviteCode" placeholder="please enter the invitation code"
+                   value="" readonly/>
+        </div>
+        <div class="login-main-otp-input">
+            <div class="login-main-otp">
+                <input type="text" name="code" placeholder="please enter the OTP"/>
+            </div>
+            <button type="button" class="login-main-otp-btn">Send</button>
+        </div>
+        <div class="btn-box">
+            <button type="button" class="login-btn">Sign In</button>
+            <a href="login.html" class="reg-btn">Login</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var _token = "uNE79oUqysQO8wizHV8e8nYtc4BUenvT9CCqHVmE";
+    layui.use(['form', 'layer'], function () {
+        $ = layui.jquery;
+        var form = layui.form, layer = layui.layer;
+
+        $("body").on('click', '.login-btn', function () {
+            var _this = $(this);
+            _this.attr('disabled', true);
+            var loading = layer.load(2, {shade: [0.5, '#393D49']});
+            var mobile = $.trim($("input[name='mobile']").val());
+            var password = $("input[name='password']").val();
+            var inviteCode = $("input[name='inviteCode']").val();
+            var code = $("input[name='code']").val();
+            if (mobile.length == 0) {
+                layer.close(loading);
+                layer.msg('please enter your mobile number...', {icon: 16, time: 1000, shade: [0.5, '#393D49']});
+                _this.attr('disabled', false);
+                return false;
+            }
+            if (password.length == 0) {
+                layer.close(loading);
+                layer.msg('please enter your password...', {icon: 16, time: 1000, shade: [0.5, '#393D49']});
+                _this.attr('disabled', false);
+                return false;
+            }
+            if (inviteCode.length == 0) {
+                layer.close(loading);
+                layer.msg('please enter invite code...', {icon: 16, time: 1000, shade: [0.5, '#393D49']});
+                _this.attr('disabled', false);
+                return false;
+            }
+            if ((/^\d{6}$/.test(code)) == false) {
+                layer.close(loading);
+                layer.msg('please enter the OTP...', {icon: 16, time: 1000, shade: [0.5, '#393D49']});
+                _this.attr('disabled', false);
+                return false;
+            }
+            var data = {mobile: mobile, password: password, inviteCode: inviteCode, code: code, _token: _token};
+            $.post("register.html", data, function (result) {
+                layer.close(loading);
+                _this.attr('disabled', false);
+                if (result.code == 200) {
+                    layer.msg('success...', {icon: 16, time: 1000, shade: [0.5, '#393D49']}, function () {
+                        location.href = "index.html";
+                    });
+                } else {
+                    layer.msg(result.msg, {icon: 16, time: 1000, shade: [0.5, '#393D49']});
+                }
+                return false;
+            }, "json").fail(function () {
+                layer.close(loading);
+                _this.attr('disabled', false);
+                return false;
+            });
+        });
+    });
+
+    $("body").on('click', '.login-main-otp-btn', function () {
+        var _this = $(this);
+        _this.attr("disabled", true);
+        var loading = layer.load(1, {shade: [0.5, '#393D49']});
+        var intAs = 60;
+        var mobile = $.trim($("input[name='mobile']").val());
+        if (mobile.length == 0) {
+            layer.close(loading);
+            layer.msg('please enter your mobile number...', {icon: 16, time: 1000, shade: [0.5, '#393D49']});
+            _this.attr('disabled', false);
+            return false;
+        }
+        var data = {mobile: mobile, type: 0, _token: _token};
+        $.post("sms.html", data, function (result) {
+            layer.close(loading);
+            _this.attr("disabled", false);
+            if (result.code == 200) {
+                layer.msg('success...', {icon: 16, time: 1000, shade: [0.5, '#393D49']}, function () {
+                    jsInnerTimeout(intAs);
+                });
+            } else {
+                layer.msg(result.msg, {icon: 16, time: 1000, shade: [0.5, '#393D49']});
+            }
+            return false;
+        }, "json").fail(function () {
+            layer.close(loading);
+            _this.attr('disabled', false);
+            return false;
+        });
+    });
+
+    function jsInnerTimeout(intAs) {
+        var _this = $(".login-main-otp-btn");
+        intAs--;
+        if (intAs < 1) {
+            _this.html("Send");
+            _this.attr("disabled", false);
+            return true;
+        }
+        _this.html(intAs + ' s');
+        setTimeout(function () {
+            jsInnerTimeout(intAs);
+        }, 1000);
+    }
+</script>
+</body>
+
+<!-- Mirrored from www.thomdock.com/register by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 04 Jun 2023 14:36:13 GMT -->
+</html>
